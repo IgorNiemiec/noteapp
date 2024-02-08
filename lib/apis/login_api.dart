@@ -17,8 +17,7 @@ abstract class LoginApiProtocol
 @immutable
 class LoginApi implements LoginApiProtocol
 {
-
-
+  
   @override
   Future<LoginHandle?> login({required String email, required String password}) => 
   Future.delayed(const Duration(seconds: 2), 
