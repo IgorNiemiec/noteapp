@@ -19,6 +19,9 @@ const Iterable<Note> mockNotes =
   Note(title: "Note 3"),
 ];
 
+
+const acceptedLoginHande = LoginHandle(token: "ABC");
+
 @immutable
 class DummyNotesApi implements NotesApiProtocol
 {
@@ -171,67 +174,52 @@ void main()
     );
 
 
-     blocTest<AppBloc,AppState>("Load some notes with a valid login handle",
-   build: () => AppBloc(
-    loginApi: const DummyLoginApi(
-      acceptedEmail: "foo@bar.com",
-      acceptedPassword: "baz",
-      handleToReturn: LoginHandle(token: "ABC"),), 
+    blocTest<AppBloc,AppState>("Load notes with a valid login Handle",
+     build: () => AppBloc(
+      loginApi: const DummyLoginApi(
+        acceptedEmail: "foo@bar.com", 
+        acceptedPassword: "baz", 
+        handleToReturn: acceptedLoginHande), 
+      notesApi: const DummyNotesApi(
+        acceptedLoginHandle: acceptedLoginHande, 
+        notesToReturnForAcceptedLoginHandle: mockNotes), 
+      acceptedLoginHandle: acceptedLoginHande),
+
+      act: (appBloc)
+      {
+        appBloc.add( const LoginAction(
+          email: "foo@bar.com", 
+          password: "baz"));
+
+        appBloc.add(const LoadNotesAction());
+      },
       
-    notesApi: const DummyNotesApi(
-      acceptedLoginHandle: LoginHandle(token: "ABC"),
-      
-      notesToReturnForAcceptedLoginHandle: mockNotes
-    ),
-    acceptedLoginHandle: const LoginHandle(token: "ABC")),
-    
-    act: (appBloc) 
-    {
-      appBloc.add(
-      const LoginAction(
-        email: "foo@bar.com", 
-        password: "baz"),
-       );
+      expect: () 
+      {
+         const AppState(
+          isLoading: true, 
+          loginError: null, 
+          loginHandle: null, 
+          fetchedNotes: null);
 
-      appBloc.add(
-        const LoadNotesAction()
-      );
+          const AppState(
+          isLoading: false, 
+          loginError: null, 
+          loginHandle: acceptedLoginHande, 
+          fetchedNotes: null);
 
-    
-    } ,
+          const AppState(
+          isLoading: true, 
+          loginError: null, 
+          loginHandle: acceptedLoginHande, 
+          fetchedNotes: null);
 
-    expect: () => 
-    [
-      const AppState(
-        isLoading: true,
-        loginError: null,
-        loginHandle: null,
-        fetchedNotes: null,
-      ),
-       
-      const AppState(
-        isLoading: false, 
-        loginError: null, 
-        loginHandle: LoginHandle(token: "ABC"), 
-        fetchedNotes: null),
+          const AppState(
+          isLoading: false, 
+          loginError: null, 
+          loginHandle: acceptedLoginHande, 
+          fetchedNotes: mockNotes);
 
-     const AppState(
-        isLoading: true, 
-        loginError: null, 
-        loginHandle: LoginHandle(token: "ABC"), 
-        fetchedNotes: null),
-
-       const AppState(
-        isLoading: true, 
-        loginError: null, 
-        loginHandle: LoginHandle(token: "ABC"), 
-        fetchedNotes: mockNotes),
-    ] 
-    );
-
-
-
-
-
-
+      }  
+   );
 }

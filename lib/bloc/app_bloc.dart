@@ -25,17 +25,15 @@ class AppBloc extends Bloc<AppAction,AppState>
         email: event.email,
         password: event.password);
 
-        if (logginHande!= const LoginHandle.fooBar())
-        {
 
-            emit(AppState(
-            isLoading: false,
-            loginError: logginHande == null ? LoginErrors.invalidHandle : null,
-            loginHandle: logginHande, 
-            fetchedNotes: null
-            ));
+      emit(AppState(
+      isLoading: false,
+      loginError: logginHande == null ? LoginErrors.invalidHandle : null,
+      loginHandle: logginHande, 
+      fetchedNotes: null
+      ));
 
-        }
+        
 
     
     });
@@ -60,7 +58,6 @@ class AppBloc extends Bloc<AppAction,AppState>
           return;
         }
         
-
         final notes = await NotesApi().getNotes(loginHandle: logginHandle!);
 
         emit(AppState(
