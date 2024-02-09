@@ -6,6 +6,7 @@ import 'package:noteapp/dialogs/loading_screen_controller.dart';
 
 class LoadingScreen
 {
+  
   LoadingScreen._sharedInstance();
   static late final LoadingScreen _shared = LoadingScreen._sharedInstance();
   factory LoadingScreen.instance() => _shared;

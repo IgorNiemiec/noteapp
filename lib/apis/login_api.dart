@@ -4,6 +4,7 @@ import 'package:noteapp/models.dart';
 @immutable
 abstract class LoginApiProtocol
 {
+  
   const LoginApiProtocol();
 
   Future<LoginHandle?> login(
@@ -12,6 +13,8 @@ abstract class LoginApiProtocol
       required String password,
     }
   );
+
+
 }
 
 @immutable

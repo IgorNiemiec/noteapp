@@ -10,8 +10,12 @@ class AppBloc extends Bloc<AppAction,AppState>
 
   final LoginApiProtocol loginApi;
   final NotesApiProtocol notesApi;
+  final LoginHandle acceptedLoginHandle;
 
-  AppBloc({required this.loginApi, required this.notesApi}) : super(const AppState.empty())
+  AppBloc({
+    required this.loginApi, 
+    required this.notesApi,
+    required this.acceptedLoginHandle}) : super(const AppState.empty())
   {
     on<LoginAction>((event,emit) async
     {
@@ -21,12 +25,19 @@ class AppBloc extends Bloc<AppAction,AppState>
         email: event.email,
         password: event.password);
 
-      emit(AppState(
-        isLoading: false,
-        loginError: logginHande == null ? LoginErrors.invalidHandle : null,
-        loginHandle: logginHande, 
-        fetchedNotes: null
-        ));
+        if (logginHande!= const LoginHandle.fooBar())
+        {
+
+            emit(AppState(
+            isLoading: false,
+            loginError: logginHande == null ? LoginErrors.invalidHandle : null,
+            loginHandle: logginHande, 
+            fetchedNotes: null
+            ));
+
+        }
+
+    
     });
 
     on<LoadNotesAction>(((event, emit) async {
@@ -39,7 +50,7 @@ class AppBloc extends Bloc<AppAction,AppState>
 
         final logginHandle = state.loginHandle;
 
-        if (logginHandle != const LoginHandle.fooBar())
+        if (logginHandle != acceptedLoginHandle)
         {
           emit(AppState(
             isLoading: false, 

@@ -94,7 +94,8 @@ void main()
   blocTest<AppBloc,AppState>("Initial state of the bloc should be AppState.empty()",
    build: () => AppBloc(
     loginApi: const DummyLoginApi.empty(), 
-    notesApi: const DummyNotesApi.empty()),
+    notesApi: const DummyNotesApi.empty(),
+    acceptedLoginHandle: const LoginHandle(token: "ABC")),
     
     verify: (appState) => expect(appState.state,const AppState.empty()),
   
@@ -108,7 +109,9 @@ void main()
       acceptedPassword: "foo",
       handleToReturn: LoginHandle(token: "ABC")), 
       
-    notesApi: const DummyNotesApi.empty()),
+    notesApi: const DummyNotesApi.empty(),
+    acceptedLoginHandle: const LoginHandle(token: "ABC")),
+    
     
     act: (appBloc) => appBloc.add(
       const LoginAction(
@@ -141,7 +144,8 @@ void main()
       acceptedPassword: "baz",
       handleToReturn: LoginHandle(token: "ABC")), 
       
-    notesApi: const DummyNotesApi.empty()),
+    notesApi: const DummyNotesApi.empty(),
+    acceptedLoginHandle: LoginHandle(token: "ABC")),
     
     act: (appBloc) => appBloc.add(
       const LoginAction(
@@ -167,17 +171,19 @@ void main()
     );
 
 
-     blocTest<AppBloc,AppState>("Load some notes with a valid password",
+     blocTest<AppBloc,AppState>("Load some notes with a valid login handle",
    build: () => AppBloc(
     loginApi: const DummyLoginApi(
       acceptedEmail: "foo@bar.com",
       acceptedPassword: "baz",
-      handleToReturn: LoginHandle(token: "ABC")), 
+      handleToReturn: LoginHandle(token: "ABC"),), 
       
     notesApi: const DummyNotesApi(
       acceptedLoginHandle: LoginHandle(token: "ABC"),
+      
       notesToReturnForAcceptedLoginHandle: mockNotes
-    )),
+    ),
+    acceptedLoginHandle: const LoginHandle(token: "ABC")),
     
     act: (appBloc) 
     {
@@ -215,6 +221,11 @@ void main()
         loginHandle: LoginHandle(token: "ABC"), 
         fetchedNotes: null),
 
+       const AppState(
+        isLoading: true, 
+        loginError: null, 
+        loginHandle: LoginHandle(token: "ABC"), 
+        fetchedNotes: mockNotes),
     ] 
     );
 
